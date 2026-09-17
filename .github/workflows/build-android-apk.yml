@@ -59,6 +59,20 @@ jobs:
           fi
           "$SDKMANAGER" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
+      - name: Bundle JavaScript into the debug APK
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("android/app/build.gradle")
+          text = path.read_text()
+          marker = "react {\n"
+          setting = "    debuggableVariants = []\n"
+          if setting not in text:
+              text = text.replace(marker, marker + setting, 1)
+          path.write_text(text)
+          PY
+
       - name: Assemble debug APK
         working-directory: android
         run: |
