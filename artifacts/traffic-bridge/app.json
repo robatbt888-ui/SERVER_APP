@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Traffic Bridge",
+    "slug": "traffic-bridge",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "traffic-bridge",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#05060a",
+      "image": "./assets/images/icon.png",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "com.anonymous.trafficbridge"
+    },
+    "web": {
+      "favicon": "./assets/images/icon.png"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
