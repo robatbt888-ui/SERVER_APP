@@ -4,6 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import { useColors } from '@/hooks/useColors';
 import {
   Inter_400Regular,
@@ -44,9 +45,6 @@ export default function RootLayout() {
   const startupStartedAt = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!fontsLoaded && !fontError) return;
-
-    SplashScreen.hideAsync();
     startupStartedAt.current = Date.now();
     const timer = setInterval(() => {
       const startedAt = startupStartedAt.current ?? Date.now();
@@ -64,35 +62,44 @@ export default function RootLayout() {
     }, 100);
 
     return () => clearInterval(timer);
-  }, [fontsLoaded, fontError]);
+  }, []);
 
-  if (!fontsLoaded && !fontError) return null;
-  if (!bootComplete) return <StartupScreen progress={bootProgress} />;
+  useEffect(() => {
+    // The native splash must disappear immediately so the branded 0–100% screen
+    // is the only startup view the user sees.
+    SplashScreen.hideAsync();
+  }, []);
 
   return (
     <SafeAreaProvider>
-      <ErrorBoundary>
-        <QueryClientProvider client={queryClient}>
-          <GestureHandlerRootView>
-            <KeyboardProvider>
-              <RootLayoutNav />
-            </KeyboardProvider>
-          </GestureHandlerRootView>
-        </QueryClientProvider>
-      </ErrorBoundary>
+      <ThemeProvider>
+        <ErrorBoundary>
+          <QueryClientProvider client={queryClient}>
+            <GestureHandlerRootView>
+              <KeyboardProvider>
+                {!bootComplete || (!fontsLoaded && !fontError) ? (
+                  <StartupScreen progress={bootComplete ? 100 : bootProgress} />
+                ) : (
+                  <RootLayoutNav />
+                )}
+              </KeyboardProvider>
+            </GestureHandlerRootView>
+          </QueryClientProvider>
+        </ErrorBoundary>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }
 
 function StartupScreen({ progress }: { progress: number }) {
   const colors = useColors();
-  const styles = startupStyles;
+  const styles = createStartupStyles(colors);
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
-      <StatusBar style="light" />
+      <StatusBar style={colors.mode === 'dark' ? 'light' : 'dark'} />
       <LinearGradient
-        colors={['#05060a', '#091923', '#05060a']}
+        colors={[colors.background, colors.card, colors.background]}
         style={StyleSheet.absoluteFill}
       />
       <View style={styles.content}>
@@ -107,7 +114,7 @@ function StartupScreen({ progress }: { progress: number }) {
         <Text style={styles.subtitle}>آماده‌سازی محیط اتصال</Text>
         <View style={styles.progressTrack}>
           <LinearGradient
-            colors={['#52d6c4', '#45a7ff', '#d9ff46']}
+            colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={[styles.progressFill, { width: `${progress}%` }]}
@@ -122,61 +129,63 @@ function StartupScreen({ progress }: { progress: number }) {
   );
 }
 
-const startupStyles = StyleSheet.create({
-  screen: { flex: 1 },
-  content: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 34,
-  },
-  iconFrame: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.06)',
-    borderColor: 'rgba(255,255,255,0.14)',
-    borderRadius: 38,
-    borderWidth: 1,
-    height: 190,
-    justifyContent: 'center',
-    marginBottom: 26,
-    overflow: 'hidden',
-    width: 190,
-  },
-  icon: { height: 190, width: 190 },
-  title: {
-    color: '#f4fbff',
-    fontFamily: 'Inter_700Bold',
-    fontSize: 28,
-  },
-  subtitle: {
-    color: '#9ab0c0',
-    fontFamily: 'Inter_400Regular',
-    fontSize: 14,
-    marginTop: 8,
-  },
-  progressTrack: {
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderRadius: 6,
-    height: 8,
-    marginTop: 46,
-    overflow: 'hidden',
-    width: '100%',
-  },
-  progressFill: { borderRadius: 6, height: 8 },
-  progressMeta: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 12,
-    width: '100%',
-  },
-  progressText: {
-    color: '#d9ff46',
-    fontFamily: 'Inter_700Bold',
-    fontSize: 13,
-  },
-  progressLabel: {
-    color: '#8aa3b4',
-    fontFamily: 'Inter_400Regular',
-    fontSize: 12,
-  },
-});
+function createStartupStyles(colors: ReturnType<typeof useColors>) {
+  return StyleSheet.create({
+    screen: { flex: 1 },
+    content: {
+      alignItems: 'center',
+      flex: 1,
+      justifyContent: 'center',
+      paddingHorizontal: 34,
+    },
+    iconFrame: {
+      alignItems: 'center',
+      backgroundColor: colors.card,
+      borderColor: colors.border,
+      borderRadius: 38,
+      borderWidth: 1,
+      height: 190,
+      justifyContent: 'center',
+      marginBottom: 26,
+      overflow: 'hidden',
+      width: 190,
+    },
+    icon: { height: 190, width: 190 },
+    title: {
+      color: colors.foreground,
+      fontFamily: 'Inter_700Bold',
+      fontSize: 28,
+    },
+    subtitle: {
+      color: colors.mutedForeground,
+      fontFamily: 'Inter_400Regular',
+      fontSize: 14,
+      marginTop: 8,
+    },
+    progressTrack: {
+      backgroundColor: colors.muted,
+      borderRadius: 6,
+      height: 8,
+      marginTop: 46,
+      overflow: 'hidden',
+      width: '100%',
+    },
+    progressFill: { borderRadius: 6, height: 8 },
+    progressMeta: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: 12,
+      width: '100%',
+    },
+    progressText: {
+      color: colors.primary,
+      fontFamily: 'Inter_700Bold',
+      fontSize: 13,
+    },
+    progressLabel: {
+      color: colors.mutedForeground,
+      fontFamily: 'Inter_400Regular',
+      fontSize: 12,
+    },
+  });
+}

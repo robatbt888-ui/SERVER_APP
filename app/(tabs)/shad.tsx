@@ -1,113 +1,192 @@
 import { Feather, Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
+import * as WebBrowser from 'expo-web-browser';
+import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import {
+  ActivityIndicator,
+  Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import * as WebBrowser from 'expo-web-browser';
+import { WebView } from 'react-native-webview';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { useThemeMode } from '@/contexts/ThemeContext';
 import { useColors } from '@/hooks/useColors';
 
 const SHAD_URL = 'https://web.shad.ir';
 
 export default function ShadScreen() {
   const colors = useColors();
+  const { mode } = useThemeMode();
   const insets = useSafeAreaInsets();
-  const styles = createStyles(colors);
+  const webViewRef = useRef<WebView>(null);
+  const [loading, setLoading] = useState(true);
 
-  const openShad = async () => {
-    await Haptics.selectionAsync();
-    try {
-      await WebBrowser.openBrowserAsync(SHAD_URL);
-    } catch {
-      // The in-app browser reports its own network errors to the user.
-    }
-  };
-
-  return (
-    <View style={styles.screen}>
-      <StatusBar style={colors.background === '#07141f' ? 'light' : 'dark'} />
-      <ScrollView
-        contentContainerStyle={[
-          styles.content,
-          { paddingTop: insets.top + 18, paddingBottom: insets.bottom + 118 },
-        ]}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.header}>
-          <Text style={styles.eyebrow}>BRIDGE SESSION</Text>
-          <Text style={styles.title}>ورود به شاد</Text>
-          <Text style={styles.subtitle}>
-            صفحهٔ رسمی شاد در مرورگر داخلی برنامه باز می‌شود؛ ورود شما در
-            همان محیط انجام خواهد شد و از برنامه خارج نمی‌شوید.
+  if (Platform.OS === 'web') {
+    return (
+      <View style={[webStyles.webScreen, { backgroundColor: colors.background }]}>
+        <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+        <View style={[webStyles.webFallback, { paddingTop: insets.top + 32 }]}>
+          <Ionicons name="globe-outline" size={42} color={colors.primary} />
+          <Text style={[webStyles.fallbackTitle, { color: colors.foreground }]}>
+            شاد در نسخه‌ی اندروید مستقیماً داخل برنامه باز می‌شود
           </Text>
-        </View>
-
-        <View style={styles.heroCard}>
-          <View style={styles.heroGlow} />
-          <View style={styles.browserIcon}>
-            <Ionicons name="globe-outline" size={30} color={colors.primary} />
-          </View>
-          <Text style={styles.heroTitle}>اتصال به web.shad.ir</Text>
-          <Text style={styles.heroText}>
-             این برنامه فقط صفحهٔ رسمی شاد را در مرورگر داخلی نمایش می‌دهد.
-             اطلاعات ورود شما توسط این برنامه دریافت یا ذخیره نمی‌شود.
+          <Text style={[webStyles.fallbackText, { color: colors.mutedForeground }]}>
+            پیش‌نمایش مرورگری از WebView بومی اندروید پشتیبانی نمی‌کند.
           </Text>
           <Pressable
-            accessibilityLabel="باز کردن وب شاد"
-            accessibilityRole="button"
-            onPress={openShad}
-            testID="open-shad"
-            style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}
+            onPress={() => WebBrowser.openBrowserAsync(SHAD_URL)}
+            style={[webStyles.fallbackButton, { backgroundColor: colors.primary }]}
           >
-            <Feather name="globe" size={18} color={colors.primaryForeground} />
-            <Text style={styles.primaryButtonText}>ورود به شاد</Text>
+            <Text style={{ color: colors.primaryForeground, fontFamily: 'Inter_700Bold' }}>
+              باز کردن پیش‌نمایش
+            </Text>
           </Pressable>
-          <Text style={styles.urlLabel}>{SHAD_URL.replace('https://', '')}</Text>
         </View>
+      </View>
+    );
+  }
 
-        <View style={styles.sectionHeading}>
-          <Text style={styles.sectionTitle}>مراحل اتصال</Text>
-          <Text style={styles.sectionMeta}>۳ گام</Text>
-        </View>
-
-        <View style={styles.stepsCard}>
-          <Step
-            colors={colors}
-            number="۱"
-            title="ورود در صفحه رسمی"
-            description="حساب خود را فقط در دامنه‌ی رسمی شاد وارد کنید."
-          />
-          <Step
-            colors={colors}
-            number="۲"
-            title="بازگشت به برنامه"
-            description="پس از اتمام ورود، به Traffic Bridge برگردید."
-          />
-          <Step
-            colors={colors}
-            number="۳"
-            title="آماده‌سازی مرحله بعد"
-            description="اتصال واقعی پس از آماده شدن سرویس سرور فعال می‌شود."
-          />
-        </View>
-
-        <View style={styles.securityNote}>
-          <Feather name="lock" size={17} color={colors.accentForeground} />
-          <Text style={styles.securityText}>
-            برای امنیت، رمز عبور و نشست شاد در این مرحله داخل برنامه ذخیره
-            نمی‌شود.
+  return (
+    <View style={[webStyles.webScreen, { backgroundColor: colors.background }]}>
+      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+      <View
+        style={[
+          webStyles.browserBar,
+          {
+            backgroundColor: colors.card,
+            borderBottomColor: colors.border,
+            paddingTop: insets.top + 8,
+          },
+        ]}
+      >
+        <ThemeToggle />
+        <LinearGradient
+          colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={webStyles.addressBar}
+        >
+          <Feather name="lock" size={13} color={colors.primaryForeground} />
+          <Text style={[webStyles.addressText, { color: colors.primaryForeground }]}>
+            web.shad.ir
           </Text>
-        </View>
-      </ScrollView>
+        </LinearGradient>
+        <Pressable
+          accessibilityLabel="بارگذاری دوباره صفحه شاد"
+          accessibilityRole="button"
+          onPress={() => webViewRef.current?.reload()}
+          style={[webStyles.reloadButton, { backgroundColor: colors.muted }]}
+        >
+          <Feather name="refresh-cw" size={17} color={colors.foreground} />
+        </Pressable>
+      </View>
+      <View style={webStyles.webContainer}>
+        <WebView
+          ref={webViewRef}
+          source={{ uri: SHAD_URL }}
+          style={webStyles.webView}
+          onLoadStart={() => setLoading(true)}
+          onLoadEnd={() => setLoading(false)}
+          startInLoadingState
+          sharedCookiesEnabled
+          thirdPartyCookiesEnabled
+          setSupportMultipleWindows={false}
+          javaScriptEnabled
+          domStorageEnabled
+        />
+        {loading && (
+          <View style={[webStyles.loadingOverlay, { backgroundColor: colors.background }]}>
+            <ActivityIndicator color={colors.primary} size="large" />
+            <Text style={[webStyles.loadingText, { color: colors.mutedForeground }]}>
+              در حال بارگذاری شاد
+            </Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 }
+
+const webStyles = StyleSheet.create({
+  webScreen: { flex: 1 },
+  browserBar: {
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: 8,
+    paddingBottom: 8,
+    paddingHorizontal: 14,
+  },
+  addressBar: {
+    alignItems: 'center',
+    borderRadius: 15,
+    flex: 1,
+    flexDirection: 'row',
+    gap: 7,
+    justifyContent: 'center',
+    minHeight: 38,
+    paddingHorizontal: 14,
+  },
+  addressText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 12,
+  },
+  reloadButton: {
+    alignItems: 'center',
+    borderRadius: 14,
+    height: 40,
+    justifyContent: 'center',
+    width: 40,
+  },
+  webContainer: { flex: 1, position: 'relative' },
+  webView: { flex: 1 },
+  loadingOverlay: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  loadingText: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 13,
+    marginTop: 12,
+  },
+  webFallback: {
+    alignItems: 'center',
+    flex: 1,
+    paddingHorizontal: 28,
+  },
+  fallbackTitle: {
+    fontFamily: 'Inter_700Bold',
+    fontSize: 20,
+    lineHeight: 30,
+    marginTop: 20,
+    textAlign: 'center',
+  },
+  fallbackText: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 13,
+    lineHeight: 22,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  fallbackButton: {
+    alignItems: 'center',
+    borderRadius: 14,
+    marginTop: 24,
+    minHeight: 48,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+});
 
 function Step({
   colors,

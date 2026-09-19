@@ -3,6 +3,8 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { useThemeMode } from '@/contexts/ThemeContext';
 import { useColors } from '@/hooks/useColors';
 
 const steps = [
@@ -59,12 +61,13 @@ const steps = [
 
 export default function GuideScreen() {
   const colors = useColors();
+  const { mode } = useThemeMode();
   const insets = useSafeAreaInsets();
   const styles = createStyles(colors);
 
   return (
     <View style={styles.screen}>
-      <StatusBar style={colors.background === '#07141f' ? 'light' : 'dark'} />
+      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
       <ScrollView
         contentContainerStyle={[
           styles.content,
@@ -73,7 +76,10 @@ export default function GuideScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={styles.eyebrow}>SECURE SETUP</Text>
+          <View style={styles.headerRow}>
+            <ThemeToggle />
+            <Text style={styles.eyebrow}>SECURE SETUP</Text>
+          </View>
           <Text style={styles.title}>راهنمای اتصال سرور</Text>
           <Text style={styles.subtitle}>
             مراحل راه‌اندازی را به‌ترتیب انجام دهید. کنترل حساب‌ها، سرور و
@@ -178,6 +184,11 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     screen: { backgroundColor: colors.background, flex: 1 },
     content: { gap: 18, paddingHorizontal: 20 },
     header: { gap: 8 },
+    headerRow: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
     eyebrow: {
       color: colors.primary,
       fontFamily: 'Inter_700Bold',

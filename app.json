@@ -8,8 +8,7 @@
     "scheme": "traffic-bridge",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "backgroundColor": "#05060a",
-      "image": "./assets/images/icon.png",
+      "backgroundColor": "#05070a",
       "resizeMode": "contain"
     },
     "ios": {

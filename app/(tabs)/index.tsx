@@ -1,6 +1,7 @@
 import { Feather, Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { StatusBar } from 'expo-status-bar';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -12,6 +13,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColors } from '@/hooks/useColors';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { useThemeMode } from '@/contexts/ThemeContext';
 
 function formatBytes(value: number) {
   if (value === 0) return '۰ B';
@@ -20,6 +23,7 @@ function formatBytes(value: number) {
 
 export default function ConnectionScreen() {
   const colors = useColors();
+  const { mode } = useThemeMode();
   const insets = useSafeAreaInsets();
   const [connected, setConnected] = useState(false);
   const pulseScale = useRef(new Animated.Value(0.92)).current;
@@ -70,7 +74,7 @@ export default function ConnectionScreen() {
 
   return (
     <View style={styles.screen}>
-      <StatusBar style={colors.background === '#07141f' ? 'light' : 'dark'} />
+      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
       <ScrollView
         contentContainerStyle={[
           styles.content,
@@ -83,9 +87,12 @@ export default function ConnectionScreen() {
             <Text style={styles.eyebrow}>TRAFFIC BRIDGE</Text>
             <Text style={styles.title}>مرکز اتصال</Text>
           </View>
-          <View style={styles.stageBadge}>
-            <View style={styles.stageDot} />
-            <Text style={styles.stageText}>مرحله اول</Text>
+          <View style={styles.headerActions}>
+            <ThemeToggle />
+            <View style={styles.stageBadge}>
+              <View style={styles.stageDot} />
+              <Text style={styles.stageText}>مرحله اول</Text>
+            </View>
           </View>
         </View>
 
@@ -93,7 +100,12 @@ export default function ConnectionScreen() {
           وضعیت سرویس اتصال و میزان ترافیک جاری را مشاهده و مدیریت کنید.
         </Text>
 
-        <View style={styles.connectionCard}>
+        <LinearGradient
+          colors={[colors.card, colors.secondary, colors.card]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.connectionCard}
+        >
           <View style={styles.cardHeader}>
             <View>
               <Text style={styles.cardKicker}>وضعیت اتصال</Text>
@@ -183,7 +195,7 @@ export default function ConnectionScreen() {
               ? 'سرویس اتصال فعال است. انتقال ترافیک پس از تکمیل تنظیمات سرور انجام می‌شود.'
               : 'برای آغاز فرایند برقراری اتصال، دکمهٔ شروع را لمس کنید.'}
           </Text>
-        </View>
+        </LinearGradient>
 
         <View style={styles.sectionHeading}>
           <Text style={styles.sectionTitle}>مصرف ترافیک</Text>
@@ -258,6 +270,11 @@ function createStyles(colors: ReturnType<typeof useColors>) {
       alignItems: 'flex-start',
       flexDirection: 'row',
       justifyContent: 'space-between',
+    },
+    headerActions: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      gap: 8,
     },
     eyebrow: {
       color: colors.primary,

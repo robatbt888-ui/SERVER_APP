@@ -1,5 +1,5 @@
-import { useColorScheme } from 'react-native';
 import colors from '@/constants/colors';
+import { useThemeMode } from '@/contexts/ThemeContext';
 
 /**
  * Returns the design tokens for the current color scheme.
@@ -14,10 +14,7 @@ import colors from '@/constants/colors';
  * device's appearance setting.
  */
 export function useColors() {
-  const scheme = useColorScheme();
-  const palette =
-    scheme === 'dark' && 'dark' in colors
-      ? (colors as typeof colors & { dark: typeof colors.light }).dark
-      : colors.light;
-  return { ...palette, radius: colors.radius };
+  const { mode } = useThemeMode();
+  const palette = mode === 'dark' ? colors.dark : colors.light;
+  return { ...palette, mode, radius: colors.radius };
 }
