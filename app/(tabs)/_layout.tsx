@@ -27,6 +27,12 @@ function NativeTabLayout() {
         />
         <NativeTabs.Trigger.Label>شاد</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="guide">
+        <NativeTabs.Trigger.Icon
+          sf={{ default: 'questionmark.circle', selected: 'questionmark.circle.fill' }}
+        />
+        <NativeTabs.Trigger.Label>راهنما</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
     </NativeTabs>
   );
 }
@@ -90,6 +96,18 @@ function ClassicTabLayout() {
               <SymbolView name="safari" tintColor={color} size={23} />
             ) : (
               <Feather name="globe" size={22} color={color} />
+            ),
+        }}
+      />
+      <Tabs.Screen
+        name="guide"
+        options={{
+          title: 'راهنما',
+          tabBarIcon: ({ color }) =>
+            isIOS ? (
+              <SymbolView name="questionmark.circle" tintColor={color} size={23} />
+            ) : (
+              <Feather name="help-circle" size={22} color={color} />
             ),
         }}
       />

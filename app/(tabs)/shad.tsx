@@ -3,14 +3,13 @@ import * as Haptics from 'expo-haptics';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import {
-  Alert,
-  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColors } from '@/hooks/useColors';
 
@@ -24,9 +23,9 @@ export default function ShadScreen() {
   const openShad = async () => {
     await Haptics.selectionAsync();
     try {
-      await Linking.openURL(SHAD_URL);
+      await WebBrowser.openBrowserAsync(SHAD_URL);
     } catch {
-      Alert.alert('باز کردن شاد ممکن نیست', 'لطفاً اتصال اینترنت را بررسی کنید.');
+      // The in-app browser reports its own network errors to the user.
     }
   };
 
@@ -44,7 +43,8 @@ export default function ShadScreen() {
           <Text style={styles.eyebrow}>BRIDGE SESSION</Text>
           <Text style={styles.title}>ورود به شاد</Text>
           <Text style={styles.subtitle}>
-            برای ادامه، ورود به حساب شاد را در مرورگر امن دستگاه انجام دهید.
+            صفحهٔ رسمی شاد در مرورگر داخلی برنامه باز می‌شود؛ ورود شما در
+            همان محیط انجام خواهد شد و از برنامه خارج نمی‌شوید.
           </Text>
         </View>
 
@@ -55,8 +55,8 @@ export default function ShadScreen() {
           </View>
           <Text style={styles.heroTitle}>اتصال به web.shad.ir</Text>
           <Text style={styles.heroText}>
-            این دکمه صفحه‌ی رسمی شاد را باز می‌کند. اطلاعات ورود در این
-            اپلیکیشن دریافت یا نمایش داده نمی‌شود.
+             این برنامه فقط صفحهٔ رسمی شاد را در مرورگر داخلی نمایش می‌دهد.
+             اطلاعات ورود شما توسط این برنامه دریافت یا ذخیره نمی‌شود.
           </Text>
           <Pressable
             accessibilityLabel="باز کردن وب شاد"
@@ -65,8 +65,8 @@ export default function ShadScreen() {
             testID="open-shad"
             style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}
           >
-            <Feather name="external-link" size={18} color={colors.primaryForeground} />
-            <Text style={styles.primaryButtonText}>باز کردن شاد</Text>
+            <Feather name="globe" size={18} color={colors.primaryForeground} />
+            <Text style={styles.primaryButtonText}>ورود به شاد</Text>
           </Pressable>
           <Text style={styles.urlLabel}>{SHAD_URL.replace('https://', '')}</Text>
         </View>

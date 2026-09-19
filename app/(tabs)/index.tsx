@@ -90,15 +90,15 @@ export default function ConnectionScreen() {
         </View>
 
         <Text style={styles.subtitle}>
-          وضعیت ارتباط را کنترل کنید و مصرف ترافیک را در یک نگاه ببینید.
+          وضعیت سرویس اتصال و میزان ترافیک جاری را مشاهده و مدیریت کنید.
         </Text>
 
         <View style={styles.connectionCard}>
           <View style={styles.cardHeader}>
             <View>
-              <Text style={styles.cardKicker}>وضعیت سرویس</Text>
+              <Text style={styles.cardKicker}>وضعیت اتصال</Text>
               <Text style={styles.cardTitle}>
-                {connected ? 'اتصال فعال است' : 'آماده‌ی اتصال'}
+                {connected ? 'اتصال برقرار است' : 'اتصال برقرار نیست'}
               </Text>
             </View>
             <View
@@ -127,7 +127,7 @@ export default function ConnectionScreen() {
                   },
                 ]}
               >
-                {connected ? 'متصل' : 'قطع'}
+                {connected ? 'فعال' : 'آماده به کار'}
               </Text>
             </View>
           </View>
@@ -173,15 +173,15 @@ export default function ConnectionScreen() {
                   },
                 ]}
               >
-                {connected ? 'فعال' : 'اتصال'}
+                 {connected ? 'فعال' : 'شروع'}
               </Text>
             </Pressable>
           </View>
 
           <Text style={styles.demoLabel}>
             {connected
-              ? 'حالت نمایشی فعال است؛ انتقال واقعی در مرحله‌ی سرور اضافه می‌شود.'
-              : 'برای شروع، دکمه‌ی اتصال را لمس کنید.'}
+              ? 'سرویس اتصال فعال است. انتقال ترافیک پس از تکمیل تنظیمات سرور انجام می‌شود.'
+              : 'برای آغاز فرایند برقراری اتصال، دکمهٔ شروع را لمس کنید.'}
           </Text>
         </View>
 
@@ -212,10 +212,10 @@ export default function ConnectionScreen() {
             <Feather name="shield" size={18} color={colors.primary} />
           </View>
           <View style={styles.noteCopy}>
-            <Text style={styles.noteTitle}>کنترل در دست شماست</Text>
+             <Text style={styles.noteTitle}>حریم خصوصی و کنترل</Text>
             <Text style={styles.noteText}>
-              این نسخه، رابط کاربری مرحله‌ی اول است. هیچ نشست یا اطلاعات ورود
-              بدون اقدام مستقیم شما ذخیره نمی‌شود.
+               اطلاعات ورود و نشست بدون اقدام مستقیم شما ذخیره نمی‌شود. برای
+               آشنایی با پیش‌نیازهای راه‌اندازی، راهنمای اتصال سرور را ببینید.
             </Text>
           </View>
         </View>
