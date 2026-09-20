@@ -125,7 +125,7 @@ export default function ConnectionScreen() {
                   {
                     backgroundColor: connected
                       ? colors.primary
-                      : colors.destructive,
+                      : colors.destructiveForeground,
                   },
                 ]}
               />
@@ -135,7 +135,7 @@ export default function ConnectionScreen() {
                   {
                     color: connected
                       ? colors.accentForeground
-                      : colors.mutedForeground,
+                      : colors.destructiveForeground,
                   },
                 ]}
               >
@@ -352,7 +352,7 @@ function createStyles(colors: ReturnType<typeof useColors>) {
       paddingVertical: 7,
     },
     statusPillOn: { backgroundColor: colors.accent },
-    statusPillOff: { backgroundColor: colors.muted },
+    statusPillOff: { backgroundColor: colors.destructive },
     statusPillDot: { borderRadius: 4, height: 8, width: 8 },
     statusPillText: {
       fontFamily: 'Inter_600SemiBold',
