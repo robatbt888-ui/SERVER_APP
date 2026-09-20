@@ -105,12 +105,20 @@ function StartupScreen({ progress }: { progress: number }) {
       <View style={styles.content}>
         <View style={styles.iconFrame}>
           <Image
-            accessibilityLabel="آیکون Traffic Bridge"
+             accessibilityLabel="آیکون HooshNet"
             source={require('../assets/images/icon.png')}
             style={styles.icon}
           />
         </View>
-        <Text style={styles.title}>Traffic Bridge</Text>
+        <Text
+          adjustsFontSizeToFit
+          minimumFontScale={0.8}
+          numberOfLines={1}
+          style={styles.title}
+        >
+          <Text style={{ color: colors.gradientStart }}>Hoosh</Text>
+          <Text style={{ color: colors.gradientMid }}>Net</Text>
+        </Text>
         <Text style={styles.subtitle}>آماده‌سازی محیط اتصال</Text>
         <View style={styles.progressTrack}>
           <LinearGradient

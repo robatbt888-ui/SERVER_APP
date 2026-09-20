@@ -83,22 +83,18 @@ export default function ConnectionScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.topRow}>
-          <View>
-            <Text style={styles.eyebrow}>TRAFFIC BRIDGE</Text>
-            <Text style={styles.title}>مرکز اتصال</Text>
-          </View>
+          <Text style={styles.brandTitle} numberOfLines={1}>
+            <Text style={{ color: colors.gradientStart }}>Hoosh</Text>
+            <Text style={{ color: colors.gradientMid }}>Net</Text>
+          </Text>
           <View style={styles.headerActions}>
             <ThemeToggle />
             <View style={styles.stageBadge}>
               <View style={styles.stageDot} />
-              <Text style={styles.stageText}>مرحله اول</Text>
+              <Text style={styles.stageText}>مرکز اتصال</Text>
             </View>
           </View>
         </View>
-
-        <Text style={styles.subtitle}>
-          وضعیت سرویس اتصال و میزان ترافیک جاری را مشاهده و مدیریت کنید.
-        </Text>
 
         <LinearGradient
           colors={[colors.card, colors.secondary, colors.card]}
@@ -107,12 +103,16 @@ export default function ConnectionScreen() {
           style={styles.connectionCard}
         >
           <View style={styles.cardHeader}>
-            <View>
-              <Text style={styles.cardKicker}>وضعیت اتصال</Text>
-              <Text style={styles.cardTitle}>
-                {connected ? 'اتصال برقرار است' : 'اتصال برقرار نیست'}
+            <LinearGradient
+              colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.statusSummary}
+            >
+              <Text style={styles.statusSummaryText}>
+                وضعیت اتصال : {connected ? 'اتصال برقرار است' : 'اتصال برقرار نیست'}
               </Text>
-            </View>
+            </LinearGradient>
             <View
               style={[
                 styles.statusPill,
@@ -190,16 +190,10 @@ export default function ConnectionScreen() {
             </Pressable>
           </View>
 
-          <Text style={styles.demoLabel}>
-            {connected
-              ? 'سرویس اتصال فعال است. انتقال ترافیک پس از تکمیل تنظیمات سرور انجام می‌شود.'
-              : 'برای آغاز فرایند برقراری اتصال، دکمهٔ شروع را لمس کنید.'}
-          </Text>
         </LinearGradient>
 
         <View style={styles.sectionHeading}>
-          <Text style={styles.sectionTitle}>مصرف ترافیک</Text>
-          <Text style={styles.sectionMeta}>این نشست</Text>
+          <Text style={styles.sectionTitle}>میزان مصرف ترافیک :</Text>
         </View>
 
         <View style={styles.statsRow}>
@@ -251,14 +245,23 @@ function StatCard({
 }) {
   const styles = createStyles(colors);
   return (
-    <View style={styles.statCard}>
-      <View style={[styles.statIcon, { backgroundColor: colors.accent }]}>
+    <LinearGradient
+      colors={[colors.card, colors.secondary, colors.card]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.statCard}
+    >
+      <LinearGradient
+        colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.statIcon}
+      >
         <Feather name={icon} size={18} color={accent} />
-      </View>
+      </LinearGradient>
       <Text style={styles.statLabel}>{label}</Text>
       <Text style={styles.statValue}>{value}</Text>
-      <Text style={styles.statHint}>پس از اتصال واقعی</Text>
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -276,26 +279,11 @@ function createStyles(colors: ReturnType<typeof useColors>) {
       flexDirection: 'row',
       gap: 8,
     },
-    eyebrow: {
-      color: colors.primary,
-      fontFamily: 'Inter_700Bold',
-      fontSize: 11,
-      letterSpacing: 2,
-      textAlign: 'right',
-    },
-    title: {
+    brandTitle: {
       color: colors.foreground,
       fontFamily: 'Inter_700Bold',
-      fontSize: 30,
-      marginTop: 6,
-      textAlign: 'right',
-    },
-    subtitle: {
-      color: colors.mutedForeground,
-      fontFamily: 'Inter_400Regular',
-      fontSize: 14,
-      lineHeight: 24,
-      textAlign: 'right',
+      fontSize: 28,
+      letterSpacing: 0.4,
     },
     stageBadge: {
       alignItems: 'center',
@@ -333,19 +321,26 @@ function createStyles(colors: ReturnType<typeof useColors>) {
     cardHeader: {
       alignItems: 'flex-start',
       flexDirection: 'row',
+      gap: 10,
       justifyContent: 'space-between',
+    },
+    statusSummary: {
+      borderRadius: 15,
+      flex: 1,
+      justifyContent: 'center',
+      minHeight: 42,
+      paddingHorizontal: 13,
+    },
+    statusSummaryText: {
+      color: colors.primaryForeground,
+      fontFamily: 'Inter_700Bold',
+      fontSize: 12,
+      textAlign: 'right',
     },
     cardKicker: {
       color: colors.mutedForeground,
       fontFamily: 'Inter_500Medium',
       fontSize: 12,
-      textAlign: 'right',
-    },
-    cardTitle: {
-      color: colors.cardForeground,
-      fontFamily: 'Inter_700Bold',
-      fontSize: 18,
-      marginTop: 5,
       textAlign: 'right',
     },
     statusPill: {
@@ -394,13 +389,6 @@ function createStyles(colors: ReturnType<typeof useColors>) {
       marginTop: 9,
     },
     pressed: { opacity: 0.82, transform: [{ scale: 0.97 }] },
-    demoLabel: {
-      color: colors.mutedForeground,
-      fontFamily: 'Inter_400Regular',
-      fontSize: 12,
-      lineHeight: 20,
-      textAlign: 'center',
-    },
     sectionHeading: {
       alignItems: 'baseline',
       flexDirection: 'row',
@@ -413,24 +401,18 @@ function createStyles(colors: ReturnType<typeof useColors>) {
       fontSize: 18,
       textAlign: 'right',
     },
-    sectionMeta: {
-      color: colors.mutedForeground,
-      fontFamily: 'Inter_500Medium',
-      fontSize: 12,
-    },
-    statsRow: { flexDirection: 'row', gap: 12 },
+    statsRow: { flexDirection: 'row', gap: 10 },
     statCard: {
-      backgroundColor: colors.card,
       borderColor: colors.border,
-      borderRadius: 20,
+      borderRadius: 18,
       borderWidth: 1,
       flex: 1,
-      minHeight: 140,
-      padding: 15,
+      minHeight: 112,
+      padding: 12,
     },
     statIcon: {
       alignItems: 'center',
-      borderRadius: 11,
+      borderRadius: 10,
       height: 34,
       justifyContent: 'center',
       width: 34,
@@ -439,20 +421,13 @@ function createStyles(colors: ReturnType<typeof useColors>) {
       color: colors.mutedForeground,
       fontFamily: 'Inter_500Medium',
       fontSize: 12,
-      marginTop: 15,
+      marginTop: 10,
       textAlign: 'right',
     },
     statValue: {
       color: colors.foreground,
       fontFamily: 'Inter_700Bold',
       fontSize: 22,
-      marginTop: 3,
-      textAlign: 'right',
-    },
-    statHint: {
-      color: colors.mutedForeground,
-      fontFamily: 'Inter_400Regular',
-      fontSize: 10,
       marginTop: 3,
       textAlign: 'right',
     },

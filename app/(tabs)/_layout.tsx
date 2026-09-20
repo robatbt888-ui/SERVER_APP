@@ -55,7 +55,21 @@ function ClassicTabLayout() {
           borderTopWidth: isWeb ? 1 : 0,
           borderTopColor: colors.border,
           elevation: 0,
-          ...(isWeb ? { height: 84 } : {}),
+          height: isWeb ? 84 : 84,
+          paddingHorizontal: 8,
+          paddingTop: 7,
+        },
+        tabBarItemStyle: {
+          backgroundColor: colors.card,
+          borderColor: colors.border,
+          borderRadius: 16,
+          borderWidth: 1,
+          marginHorizontal: 4,
+          marginVertical: 3,
+        },
+        tabBarLabelStyle: {
+          fontFamily: 'Inter_600SemiBold',
+          fontSize: 11,
         },
         tabBarBackground: () =>
           isIOS ? (
