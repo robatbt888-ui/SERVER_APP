@@ -103,16 +103,6 @@ export default function ConnectionScreen() {
           style={styles.connectionCard}
         >
           <View style={styles.cardHeader}>
-            <LinearGradient
-              colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.statusSummary}
-            >
-              <Text style={styles.statusSummaryText}>
-                وضعیت اتصال : {connected ? 'اتصال برقرار است' : 'اتصال برقرار نیست'}
-              </Text>
-            </LinearGradient>
             <View
               style={[
                 styles.statusPill,
@@ -190,6 +180,16 @@ export default function ConnectionScreen() {
             </Pressable>
           </View>
 
+          <LinearGradient
+            colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.statusSummary}
+          >
+            <Text style={styles.statusSummaryText}>
+              وضعیت اتصال : {connected ? 'اتصال برقرار است' : 'اتصال برقرار نیست'}
+            </Text>
+          </LinearGradient>
         </LinearGradient>
 
         <View style={styles.sectionHeading}>

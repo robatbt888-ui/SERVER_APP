@@ -1,5 +1,6 @@
 import React from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Platform, Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { useColors } from '@/hooks/useColors';
 import { Feather } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -7,6 +8,41 @@ import { isLiquidGlassAvailable } from 'expo-glass-effect';
 import { Tabs } from 'expo-router';
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { SymbolView } from 'expo-symbols';
+
+type GradientTabButtonProps = {
+  children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+  [key: string]: unknown;
+};
+
+function GradientTabButton({
+  children,
+  style,
+  ...props
+}: GradientTabButtonProps) {
+  const colors = useColors();
+
+  return (
+    <Pressable
+      {...props}
+      style={({ pressed }) => [
+        styles.tabButton,
+        style,
+        pressed && styles.tabButtonPressed,
+      ]}
+    >
+      <LinearGradient
+        colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[StyleSheet.absoluteFill, { pointerEvents: 'none' }]}
+      />
+      <View style={[styles.tabButtonContent, { pointerEvents: 'none' }]}>
+        {children}
+      </View>
+    </Pressable>
+  );
+}
 
 // IMPORTANT: iOS 26 uses NativeTabs for native tabs with liquid glass support.
 // NativeTabs intentionally does NOT use custom design tokens — liquid glass
@@ -45,6 +81,7 @@ function ClassicTabLayout() {
 
   return (
     <Tabs
+      initialRouteName="index"
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.mutedForeground,
@@ -55,22 +92,24 @@ function ClassicTabLayout() {
           borderTopWidth: isWeb ? 1 : 0,
           borderTopColor: colors.border,
           elevation: 0,
-          height: isWeb ? 84 : 84,
+          height: isWeb ? 92 : 96,
           paddingHorizontal: 8,
-          paddingTop: 7,
+          paddingBottom: 8,
+          paddingTop: 8,
         },
         tabBarItemStyle: {
-          backgroundColor: colors.card,
-          borderColor: colors.border,
+          borderColor: colors.gradientMid,
           borderRadius: 16,
           borderWidth: 1,
           marginHorizontal: 4,
-          marginVertical: 3,
+          marginVertical: 4,
+          overflow: 'hidden',
         },
         tabBarLabelStyle: {
           fontFamily: 'Inter_600SemiBold',
           fontSize: 11,
         },
+        tabBarButton: (props) => <GradientTabButton {...props} />,
         tabBarBackground: () =>
           isIOS ? (
             <BlurView
@@ -89,14 +128,14 @@ function ClassicTabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="guide"
         options={{
-          title: 'اتصال',
+          title: 'راهنما',
           tabBarIcon: ({ color }) =>
             isIOS ? (
-              <SymbolView name="house" tintColor={color} size={24} />
+              <SymbolView name="questionmark.circle" tintColor={color} size={23} />
             ) : (
-              <Feather name="home" size={22} color={color} />
+              <Feather name="help-circle" size={22} color={color} />
             ),
         }}
       />
@@ -113,14 +152,14 @@ function ClassicTabLayout() {
         }}
       />
       <Tabs.Screen
-        name="guide"
+        name="index"
         options={{
-          title: 'راهنما',
+          title: 'اتصال',
           tabBarIcon: ({ color }) =>
             isIOS ? (
-              <SymbolView name="questionmark.circle" tintColor={color} size={23} />
+              <SymbolView name="house" tintColor={color} size={24} />
             ) : (
-              <Feather name="help-circle" size={22} color={color} />
+              <Feather name="home" size={22} color={color} />
             ),
         }}
       />
@@ -134,3 +173,23 @@ export default function TabLayout() {
   }
   return <ClassicTabLayout />;
 }
+
+const styles = StyleSheet.create({
+  tabButton: {
+    alignItems: 'center',
+    borderRadius: 15,
+    flex: 1,
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  tabButtonContent: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    width: '100%',
+  },
+  tabButtonPressed: {
+    opacity: 0.78,
+    transform: [{ scale: 0.97 }],
+  },
+});

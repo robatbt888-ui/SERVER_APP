@@ -9,6 +9,7 @@
     "userInterfaceStyle": "automatic",
     "splash": {
       "backgroundColor": "#05070a",
+      "image": "./assets/images/icon.png",
       "resizeMode": "contain"
     },
     "ios": {
