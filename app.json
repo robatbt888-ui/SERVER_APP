@@ -2,7 +2,7 @@
   "expo": {
     "name": "HooshNet",
     "slug": "traffic-bridge",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "traffic-bridge",
@@ -20,7 +20,16 @@
       "favicon": "./assets/images/icon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#05070a",
+          "image": "./assets/images/icon.png",
+          "imageWidth": 180,
+          "resizeMode": "contain"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
