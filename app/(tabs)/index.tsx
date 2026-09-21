@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Pressable,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -192,8 +193,20 @@ export default function ConnectionScreen() {
           </LinearGradient>
         </LinearGradient>
 
-        <View style={styles.sectionHeading}>
-          <Text style={styles.sectionTitle}>میزان مصرف ترافیک :</Text>
+        <View
+          style={[
+            styles.sectionHeading,
+            Platform.OS === 'android' && styles.androidSectionHeading,
+          ]}
+        >
+          <Text
+            style={[
+              styles.sectionTitle,
+              Platform.OS === 'android' && styles.androidSectionTitle,
+            ]}
+          >
+            میزان مصرف ترافیک :
+          </Text>
         </View>
 
         <View style={styles.statsRow}>
