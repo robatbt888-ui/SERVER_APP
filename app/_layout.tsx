@@ -16,7 +16,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Platform, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -119,7 +119,14 @@ function StartupScreen({ progress }: { progress: number }) {
           <Text style={{ color: colors.gradientStart }}>Hoosh</Text>
           <Text style={{ color: colors.gradientMid }}>Net</Text>
         </Text>
-        <Text style={styles.subtitle}>آماده‌سازی محیط اتصال</Text>
+        <Text
+          style={[
+            styles.subtitle,
+            Platform.OS === 'android' && styles.androidSubtitle,
+          ]}
+        >
+          آماده‌سازی محیط اتصال
+        </Text>
         <View style={styles.progressTrack}>
           <LinearGradient
             colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
@@ -169,6 +176,11 @@ function createStartupStyles(colors: ReturnType<typeof useColors>) {
       fontFamily: 'Inter_400Regular',
       fontSize: 14,
       marginTop: 8,
+    },
+    androidSubtitle: {
+      textAlign: 'center',
+      writingDirection: 'rtl',
+      width: '100%',
     },
     progressTrack: {
       backgroundColor: colors.muted,

@@ -408,11 +408,24 @@ function createStyles(colors: ReturnType<typeof useColors>) {
       justifyContent: 'space-between',
       marginTop: 4,
     },
+    androidSectionHeading: {
+      alignItems: 'flex-end',
+      alignSelf: 'stretch',
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      width: '100%',
+    },
     sectionTitle: {
       color: colors.foreground,
       fontFamily: 'Inter_700Bold',
       fontSize: 18,
       textAlign: 'right',
+    },
+    androidSectionTitle: {
+      alignSelf: 'stretch',
+      flexShrink: 0,
+      textAlign: 'right',
+      writingDirection: 'rtl',
     },
     statsRow: { flexDirection: 'row', gap: 10 },
     statCard: {
